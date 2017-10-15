@@ -16,20 +16,22 @@ void CursorPos(int XPos, int YPos){
 	SetConsoleCursorPosition(hcon, dwpos);
 	
 }
+
 void limites(){
-	for(int i=2;i>78; i++){
-		CursorPos(3,3); printf("%c", 205);
-		CursorPos(3,33); printf("%c", 205);
+	for(int i=2;i<78; i++){
+		CursorPos(i,3); printf("%c", 205);
+		CursorPos(i,22); printf("%c", 205);
 	}
-	for(int i=4;i>33; i++){
-		CursorPos(2,1); printf("%c", 186);
-		CursorPos(7,1); printf("%c", 186);
+	
+	for(int i=4;i<22; i++){
+		CursorPos(2,i); printf("%c", 186);
+		CursorPos(77,i); printf("%c", 186);
 	}
 	
 	CursorPos(2,3); printf("%c", 201);
 	CursorPos(2,33); printf("%c"), 200;
-	CursorPos(77,3); printf("%c", 187);
-	CursorPos(77 ,33); printf("%c",188);
+	CursorPos(77,3); printf("%c", 187);//esquina inferior 
+	CursorPos(77 ,22); printf("%c",188); //esequna inferior derecha
 }
 
 void hiddenCursor(){
