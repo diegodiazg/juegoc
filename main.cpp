@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <windows.h>
 #include <conio.h>
 #define ARRIBA 72
@@ -18,20 +19,21 @@ void CursorPos(int XPos, int YPos){
 }
 
 void limites(){
-	for(int i=2;i<78; i++){
+	//lineas horizontales
+	for(int i=2;i<81; i++){
 		CursorPos(i,3); printf("%c", 205);
-		CursorPos(i,22); printf("%c", 205);
+		CursorPos(i,23); printf("%c", 205);
 	}
-	
-	for(int i=4;i<22; i++){
+	//linera vertical	
+	for(int i=4;i<23; i++){
 		CursorPos(2,i); printf("%c", 186);
-		CursorPos(77,i); printf("%c", 186);
+		CursorPos(81,i); printf("%c", 186);
 	}
 	
-	CursorPos(2,3); printf("%c", 201);
-	CursorPos(2,33); printf("%c"), 200;
-	CursorPos(77,3); printf("%c", 187);//esquina inferior 
-	CursorPos(77 ,22); printf("%c",188); //esequna inferior derecha
+	CursorPos(2,3); printf("%c", 201); //esquina superior derecha 
+	CursorPos(2,23); printf("%c", 200);//esqui inferior derecha 
+	CursorPos(81,3); printf("%c", 187);//esquina superior izquierda
+	CursorPos(81 ,23); printf("%c",188); //esequna inferior izquierda
 }
 
 void hiddenCursor(){
@@ -45,24 +47,29 @@ void hiddenCursor(){
 
 class Nav {
 	int x, y;
+	int corazones;
+	int vidas;
+
 public:
-	Nav(int _x, int _y): x(_x), y(_y){}		
+	Nav(int _x, int _y, int _corazones, int _vidas): x(_x), y(_y), corazones(_corazones), vidas(_vidas) {}		
 	void show();
 	void borrar();
 	void move();
+	void dibujar_corazones();
+	void dead();
 };
 
 
 void Nav::show(){
-	CursorPos(x,y); printf("   %c", 30);
-	CursorPos(x,y); printf("  %c%c", 40, 207, 41);
-	CursorPos(x,y); printf(" %c%c%c ", 30,190,190,30);
+	CursorPos(x,y); printf("    %c", 30);
+	CursorPos(x,y); printf("   %c%c", 40, 207, 41);
+	CursorPos(x,y); printf(" %c%c%c%c ", 30,190,190,30);
 }
 
 void Nav::borrar(){
-	CursorPos(x,y); printf("      ");
-	CursorPos(x,y+1); printf("      ");
-	CursorPos(x,y+2); printf("      ");
+	CursorPos(x,y);   printf("         ");
+	CursorPos(x,y+1); printf("         ");
+	CursorPos(x,y+2); printf("        ");
 }
 
 void Nav::move(){
@@ -75,26 +82,83 @@ void Nav::move(){
 			if(tecla == ARRIBA && y>4)  y--;
 			if(tecla == ABAJO && y+3<23)  y++;	
 			show();
+			dibujar_corazones();
 			//printf (" ");
 				
 		}
 }
+void Nav::dead(){
+	if(corazones==0){
+		borrar();
+		CursorPos(x,y);    printf("   **   ");
+		CursorPos(x,y+1);  printf("  ****     ");
+		CursorPos(x,y+3); printf("   **     ");
+		
+		borrar();
+		CursorPos(x,y);    printf("   * ** *   ");
+		CursorPos(x,y+1);  printf("    ****     ");
+		CursorPos(x,7+3); printf("   * ** * *");
+		borrar();
+		vidas--;
+		corazones =3;
+		dibujar_corazones();
+		show();
+		
+		
+	}
+}
+void Nav::dibujar_corazones() {
+	CursorPos(50,2); printf("vidas %d", vidas );
+	CursorPos(64,2); printf("Salud");
+	CursorPos(70,2); printf("     ");
+	for(int i=0; i< corazones; i++){
+		CursorPos(70+1, 2); printf("%c",3);
+	}
 
+
+}
+
+class Ast{
+ 	int x, y;
+public:
+	Ast(int _x, int _y): x(_x), y(_y){}
+	void pint();
+	void mover();
+};
+void Ast::pint(){
+	CursorPos(x, y); printf("%c", 184);
+}
+
+void Ast::mover(){
+	CursorPos(x, y); printf(" ");
+	y++;
+	if(y>22) {
+		x = rand()%71 +4;
+		y =4;
+	}
+	pint();
+	
+
+}
 int main ()
 {	
 	hiddenCursor();
 	limites();
 	//int x=10;
 	//int y=10;
- 	Nav N(7, 7);
+ 	Nav N(7, 7,3, 3);
  	N.show();
+ 	N.dibujar_corazones();
+ 	Ast ast(10, 4);
 	bool game_over= false;
 	
 	while(!game_over){
 			//CursorPos(x,y);
 			//printf ("*");
+		ast.mover();
+		N.dead();
 		N.move();	
-		//Sleep(30);
+		//Sleep(10);
 	}
 
 	
