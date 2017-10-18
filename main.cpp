@@ -54,9 +54,17 @@ public:
 	Nav(int _x, int _y, int _corazones, int _vidas): x(_x), y(_y), corazones(_corazones), vidas(_vidas) {}		
 	void show();
 	void borrar();
+	void live(){vidas--;};
 	void move();
 	void dibujar_corazones();
 	void dead();
+	int X(){
+		return x;
+	}
+	int Y(){
+		return y;
+	}
+	
 };
 
 
@@ -65,6 +73,8 @@ void Nav::show(){
 	CursorPos(x,y); printf("   %c%c", 40, 207, 41);
 	CursorPos(x,y); printf(" %c%c%c%c ", 30,190,190,30);
 }
+
+
 
 void Nav::borrar(){
 	CursorPos(x,y);   printf("         ");
@@ -82,6 +92,7 @@ void Nav::move(){
 			if(tecla == ARRIBA && y>4)  y--;
 			if(tecla == ABAJO && y+3<23)  y++;	
 			show();
+			
 			dibujar_corazones();
 			//printf (" ");
 				
@@ -124,9 +135,22 @@ public:
 	Ast(int _x, int _y): x(_x), y(_y){}
 	void pint();
 	void mover();
+	void colicion( class Nav &N);
 };
+
 void Ast::pint(){
 	CursorPos(x, y); printf("%c", 184);
+}
+
+
+void Ast::colicion(class Nav &N){
+	if(x >=N.X() && x < N.X()+6 && x >=N.Y() && x < N.Y()+2){
+		N.live();
+		N.show();
+		N.dibujar_corazones();
+		x = rand()%71 +4;
+		y =4;
+	}
 }
 
 void Ast::mover(){
@@ -138,8 +162,9 @@ void Ast::mover(){
 	}
 	pint();
 	
-
 }
+
+
 int main ()
 {	
 	hiddenCursor();
@@ -155,10 +180,10 @@ int main ()
 	while(!game_over){
 			//CursorPos(x,y);
 			//printf ("*");
-		ast.mover();
+		ast.mover(); ast.colicion(N);
 		N.dead();
 		N.move();	
-		//Sleep(10);
+		Sleep(10);
 	}
 
 	
